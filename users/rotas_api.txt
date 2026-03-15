@@ -1,0 +1,46 @@
+/users/{id} - 
+exemplo:
+{
+    "first_name": "Hélio",
+    "last_name": "Tarquinio",
+    "genero": "Masculino",
+    "email": "heliobolado123@gmail.com",
+    "nascimento": "2007-01-01",
+    "cpf": "11111111111",
+    "telefone": "84999989999",
+    "estado": "RN",
+    "cidade": "Caraúbas",
+    "tipo": "usuario"
+}
+
+/users/me - Serve pra pegar os dados do usuário atual, sem precisar do id, jaq o front vai lidar so com o token da api
+exemplo: (autalizar pra receber patch tbm // nao feita)
+{
+    "first_name": "",
+    "last_name": "",
+    "genero": "",
+    "email": "admin@admin.com",
+    "nascimento": null,
+    "cpf": null,
+    "telefone": "",
+    "estado": "",
+    "cidade": "",
+    "tipo": ""
+}
+
+/auth/register - (RECEBE APENAS POST) // nao feita
+Front end vai enviar esses dados em forma de json pra essa rota:
+{
+  "email": "user@email.com",
+  "username": "user",
+  "password": "123456",
+  "genero": "masculino",
+  "nascimento": "2007-05-10",
+  "telefone": "84999999999",
+  "cpf": "12345678901",
+  "estado": "RN",
+  "cidade": "Apodi",
+  "tipo": "usuario"
+}
+
+/auth/login
