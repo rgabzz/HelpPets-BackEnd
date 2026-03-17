@@ -1,35 +1,18 @@
-/users/{id} - 
-exemplo:
-{
-    "first_name": "Hélio",
-    "last_name": "Tarquinio",
-    "genero": "Masculino",
-    "email": "heliobolado123@gmail.com",
-    "nascimento": "2007-01-01",
-    "cpf": "11111111111",
-    "telefone": "84999989999",
-    "estado": "RN",
-    "cidade": "Caraúbas",
-    "tipo": "usuario"
-}
 
-/users/me - Serve pra pegar os dados do usuário atual, sem precisar do id, jaq o front vai lidar so com o token da api
-exemplo: (autalizar pra receber patch tbm // nao feita)
-{
-    "first_name": "",
-    "last_name": "",
-    "genero": "",
-    "email": "admin@admin.com",
-    "nascimento": null,
-    "cpf": null,
-    "telefone": "",
-    "estado": "",
-    "cidade": "",
-    "tipo": ""
-}
+------- Rotas -------
+    GET /users/me 
+    PATCH /users/me 
 
-/auth/register - (RECEBE APENAS POST) // nao feita
-Front end vai enviar esses dados em forma de json pra essa rota:
+    POST /login/ 
+    POST /register/ 
+---------------------
+
+---------- Registro ----------
+/auth/register (apenas POST)
+
+- Front end vai enviar esses dados em forma de json pra essa rota, da seguinte forma:
+
+e a API vai devolver:
 {
   "email": "user@email.com",
   "username": "user",
@@ -43,4 +26,82 @@ Front end vai enviar esses dados em forma de json pra essa rota:
   "tipo": "usuario"
 }
 
-/auth/login
+------------------------------
+
+---------- Login -------------
+/auth/login (apenas POST)
+
+Front end envia:
+{
+  "email": "admin@admin.com",
+  "password": "admin"
+}
+
+e a api devolve:
+{
+  "access": "TOKEN_DE_ACESSO",
+  "refresh": "TOKEN_DE_REFRESH"
+}
+
+------------------------------
+
+------------ ID --------------
+/users/{id} - (so o dono do perfil e um admin conseguem ver ) (GET E PATCH)
+a API vai devolver:
+{
+    "first_name": "Hélio",
+    "last_name": "Tarquinio",
+    "genero": "Masculino",
+    "email": "heliobolado123@gmail.com",
+    "nascimento": "2007-01-01",
+    "cpf": "11111111111",
+    "telefone": "84999989999",
+    "estado": "RN",
+    "cidade": "Caraúbas",
+    "tipo": "usuario"
+}
+
+------------------------------
+
+------------ ME --------------
+
+/users/me - (PATCH, GET)
+Serve pra pegar os dados do usuário atual, sem precisar do id, jaq o front vai lidar so com o token da api
+Lembre de enviar os headers do token q vc vai conseguir na aba de login, q vai retornar
+
+Headers
+- Authorization: Bearer TOKEN_DE_ACESSO
+- Content-Type: application/json
+
+exemplo GET(a api devolve isso):
+{
+    "first_name": "",
+    "last_name": "",
+    "genero": "",
+    "email": "admin@admin.com",
+    "nascimento": null,
+    "cpf": null,
+    "telefone": "",
+    "estado": "",
+    "cidade": "",
+    "tipo": ""
+}
+
+exemplo PATCH: (basicamente vc consegue atualizar os dados pela msm rota so enviando o metodo patch com o dado novo)
+{
+  "telefone": "88888888",
+  "cidade": "Natal"
+}
+
+vc envia so oq mudou e a resposta vai ser os dados atualizados no caso, tipo:
+
+{ 
+  "id": 1,
+  "email": "admin@admin.com",
+  "username": "admin",
+  "telefone": "88888888",
+  "cidade": "Natal",
+  "estado": "RN",
+  "tipo": "admin"
+}
+

@@ -5,7 +5,9 @@ from django.db import models
 AbstractBaseUser -  Traz a base de Usuário pronto, so precisando adicionar os outros campos
 '''
 
-class User(AbstractUser):
+# Rever essa questão do tipo do usuário estar na rota
+
+class User(AbstractUser): 
 
     '''
     --------------------------------------------------------------------------------------------------
@@ -20,7 +22,6 @@ class User(AbstractUser):
         ('usuario', 'Usuário'),
         ('ong', 'ONG'),
         ('policia', 'Policia'),
-        ('admin', 'Admin')
         )
 
     email  = models.EmailField(unique=True)
