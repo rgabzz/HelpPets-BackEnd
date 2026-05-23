@@ -5,7 +5,7 @@ from django.db import models
 AbstractBaseUser -  Traz a base de Usuário pronto, so precisando adicionar os outros campos
 '''
 
-# Rever essa questão do tipo do usuário estar na rota
+# Rever essa questão do tipo do usuário estar na rota, e adicionar cadastero de ong
 
 class User(AbstractUser): 
 
