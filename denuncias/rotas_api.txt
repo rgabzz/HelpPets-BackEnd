@@ -1,0 +1,6 @@
+------- Rotas -------
+    GET /denunciar/regiao=filtrar_pela_regiao
+    GET /denunciar/{id} 
+
+    POST /denunciar/criar
+---------------------

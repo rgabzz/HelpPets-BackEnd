@@ -42,7 +42,6 @@ e a api devolve:
   "access": "TOKEN_DE_ACESSO",
   "refresh": "TOKEN_DE_REFRESH"
 }
-
 ------------------------------
 
 ------------ ID --------------
