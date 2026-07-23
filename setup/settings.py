@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     # Updates
     'rest_framework',
+    'django_filters',
 
     # Help Pets
     'users',
@@ -87,9 +88,9 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'help_pets',
-        'USER': 'django',
-        'PASSWORD': 'senha123',
+        'NAME': 'Helppets',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }

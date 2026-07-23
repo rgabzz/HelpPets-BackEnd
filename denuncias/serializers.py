@@ -5,4 +5,4 @@ from rest_framework import serializers
 class DenunciasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Denuncias
-        exclude = []
+        fields = '__all__'
