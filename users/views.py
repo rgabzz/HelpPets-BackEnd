@@ -1,5 +1,5 @@
-from users.models import User
-from users.serializers import UserSerializer,RegisterSerializer,CustomTokenSerializer
+from users.models import User,Ong
+from users.serializers import UserSerializer,RegisterSerializer,CustomTokenSerializer,OngSerializer
 from users.permissions import permissions,IsOwnerorAdmin
 
 from rest_framework import viewsets,generics
@@ -13,6 +13,7 @@ class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     permission_classes = [permissions.IsAuthenticated,IsOwnerorAdmin]
+    http_method_names = ['get','patch','delete','head','options']
 
     @action(detail=False,methods=["get","patch"])
     def me(self,request):
@@ -40,4 +41,10 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class LoginView(TokenObtainPairView):
-    serializer_class =  CustomTokenSerializer
+    serializer_class = CustomTokenSerializer
+
+class Ongviewset(viewsets.ModelViewSet):
+    serializer_class = OngSerializer
+    queryset = Ong.objects.all()
+
+    permission_classes = [permissions.IsAuthenticated]

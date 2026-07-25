@@ -10,4 +10,6 @@ class DenunciasViewset(viewsets.ModelViewSet):
     
     filter_backends = [DjangoFilterBackend]
 
-    filterset_fields = ['cidade']
+    filterset_fields = ['cidade','usuario_id','status']
+
+    permission_classes = [permissions.IsAuthenticated]

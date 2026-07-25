@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser,PermissionsMixin
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from users.models import Ong
+
 
 from multiselectfield import MultiSelectField
 
@@ -69,11 +71,16 @@ class Denuncias(models.Model):
 
     data_encontro = models.DateTimeField(null=False,default=timezone.now)
 
-    status =  models.CharField(max_length=50, choices=STATUS_DENUNCIA)
+    data_status_aceito = models.DateTimeField(null=True,default=timezone.now)
 
-    usuario_id = models.ForeignKey('User', on_delete=models.SET_NULL, verbose_name="Usuario ID")
+    status =  models.CharField(max_length=50, choices=STATUS_DENUNCIA)
     
-    #ong_id = models.IntegerField(),
+    ong_id = models.ForeignKey(
+        'users.Ong',
+        on_delete=models.SET_NULL, 
+        verbose_name="ONG ID",
+        null=True
+    )
 
     criado_em = models.DateTimeField(null=False,default=timezone.now)
 
@@ -83,5 +90,6 @@ class Denuncias(models.Model):
         null=True, 
         verbose_name="Usuario ID"
     )
+    
     def __str__(self):
         return self.titulo_caixinha

@@ -1,4 +1,4 @@
-from users.models import User
+from users.models import User,Ong
 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -25,7 +25,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             "cpf",
             "estado",
             "cidade",
-            "tipo" 
         ]
 
         # quando for criar, apaga a senha, e cira usando comando que criptografa e salva
@@ -40,6 +39,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 class CustomTokenSerializer(TokenObtainPairSerializer):
     username_field = "email"
 
-
+class OngSerializer(serializers.ModelSerializer): 
+    class Meta():
+        model = Ong
+        fields = '__all__'
 
         

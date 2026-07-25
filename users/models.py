@@ -34,11 +34,11 @@ class User(AbstractUser):
     estado = models.CharField(max_length=50)
     cidade = models.CharField(max_length=100)
     
-    tipo =  models.CharField(max_length=10, choices=TIPO_USUARIO)
+    tipo =  models.CharField(max_length=10, choices=TIPO_USUARIO, default='usuario')
 
     '''
     USERNAME_FIELD - Diz pro django que o email também será usado para login
-    REQUIRED_FIELDS - Diz pro comando de createsuperuser, que username também sera requisitadop
+    REQUIRED_FIELDS - Diz pro comando de createsuperuser, que username também sera requisitado
     '''
 
     USERNAME_FIELD = "email"
@@ -46,3 +46,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+
+class Ong(models.Model):
+
+    usuario = models.OneToOneField(
+        'User',
+        on_delete=models.CASCADE,
+        related_name='perfil_ONG',
+        null=False,
+    )
+
+    endereco  = models.CharField(max_length=255, null=False)
+
+    pix = models.CharField(max_length=255, null=False)
+
+    instagram  = models.CharField(max_length=255, null=False)
+
+    descricao = models.TextField(null=False)
+
+    def __str__(self):
+            return self.descricao
+
+
