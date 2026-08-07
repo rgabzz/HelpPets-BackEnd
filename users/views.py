@@ -43,7 +43,7 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer
 
-class Ongviewset(viewsets.ModelViewSet):
+class OngViewset(viewsets.ModelViewSet):
     serializer_class = OngSerializer
     queryset = Ong.objects.all()
 

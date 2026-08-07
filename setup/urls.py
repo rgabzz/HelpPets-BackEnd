@@ -3,13 +3,15 @@ from django.urls import path,include
 
 from rest_framework import routers
 
-from users.views import UserView,RegisterView,LoginView,Ongviewset
+from users.views import UserView,RegisterView,LoginView,OngViewset
 from denuncias.views import DenunciasViewset
+from adocoes.views import AnimalViewset
 
 router = routers.DefaultRouter()
 router.register('users', UserView,'usuarios')
 router.register('denuncias', DenunciasViewset, basename='denuncias')
-router.register('ongs', Ongviewset, basename='ongs')
+router.register('ongs', OngViewset, basename='ongs')
+router.register('animais', AnimalViewset, basename='animais')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

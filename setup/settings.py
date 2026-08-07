@@ -47,9 +47,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
 
-    # Help Pets
+    # HelpPets
     'users',
     'denuncias',
+    'adocoes',
 ]
 
 MIDDLEWARE = [
@@ -89,8 +90,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'help_pets',
-        'USER': 'django',
-        'PASSWORD': 'senha123',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }
