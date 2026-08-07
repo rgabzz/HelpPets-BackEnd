@@ -1,6 +1,123 @@
 ------- Rotas -------
-    GET /denunciar/regiao=filtrar_pela_regiao
-    GET /denunciar/{id} 
-
-    POST /denunciar/criar
+    GET    /denuncias/
+    POST   /denuncias/
+    GET    /denuncias/{id}/
+    PUT    /denuncias/{id}/
+    PATCH  /denuncias/{id}/
+    DELETE /denuncias/{id}/
 ---------------------
+
+---------- Autenticação ----------
+Todas as rotas de /denuncias/ exigem usuário autenticado (permissions.IsAuthenticated).
+
+Headers obrigatórios:
+- Authorization: Bearer TOKEN_DE_ACESSO
+- Content-Type: application/json
+-----------------------------------
+
+---------- Listar (GET /denuncias/) ----------
+Retorna uma lista com todas as denúncias cadastradas.
+
+Suporta filtros via query params (DjangoFilterBackend):
+- ?cidade=Apodi
+- ?usuario_id=1
+- ?status=aberto
+
+Exemplo: GET /denuncias/?cidade=Apodi&status=aberto
+
+a API vai devolver uma lista de objetos, no formato:
+[
+  {
+    "id": 1,
+    "titulo_caixinha": "Cachorro ferido na praça",
+    "midia_path": "midias/foto1.jpg",
+    "tipo_animal": "Cachorro",
+    "quantidade": 1,
+    "latitude": "-5.660800",
+    "longitude": "-37.796900",
+    "cidade": "Apodi",
+    "condicao": ["Machucado", "Sangrando"],
+    "descricao": "Animal encontrado ferido próximo à praça central",
+    "motivo": "Maus tratos",
+    "data_encontro": "2026-08-05T14:30:00Z",
+    "data_status_aceito": "2026-08-05T15:00:00Z",
+    "status": "aberto",
+    "ong_id": null,
+    "criado_em": "2026-08-05T14:35:00Z",
+    "usuario_id": 3
+  }
+]
+------------------------------------------------
+
+---------- Criar (POST /denuncias/) ----------
+Front end envia (campos obrigatórios do model):
+{
+  "titulo_caixinha": "Cachorro ferido na praça",
+  "midia_path": "midias/foto1.jpg",
+  "tipo_animal": "Cachorro",
+  "quantidade": 1,
+  "latitude": -5.6608,
+  "longitude": -37.7969,
+  "cidade": "Apodi",
+  "condicao": ["Machucado", "Sangrando"],
+  "descricao": "Animal encontrado ferido próximo à praça central",
+  "motivo": "Maus tratos",
+  "status": "aberto"
+}
+
+Campos opcionais / preenchidos automaticamente pela API se não enviados:
+- data_encontro       -> default: data/hora atual
+- data_status_aceito  -> default: data/hora atual
+- criado_em           -> default: data/hora atual
+- ong_id              -> null até uma ONG assumir o chamado
+- usuario_id          -> normalmente setado a partir do usuário logado
+
+a API vai devolver o objeto criado, no mesmo formato do GET (com "id" novo).
+------------------------------------------------
+
+---------- Detalhar (GET /denuncias/{id}/) ----------
+Retorna os dados de uma denúncia específica, no mesmo formato do item da listagem.
+--------------------------------------------------------
+
+---------- Atualizar completo (PUT /denuncias/{id}/) ----------
+Front end precisa enviar TODOS os campos obrigatórios do model (igual ao POST).
+a API vai devolver o objeto atualizado.
+------------------------------------------------------------------
+
+---------- Atualizar parcial (PATCH /denuncias/{id}/) ----------
+Front end envia só o que mudou, por exemplo:
+{
+  "status": "atendimento",
+  "ong_id": 2
+}
+
+a API vai devolver o objeto com os dados atualizados:
+{
+  "id": 1,
+  "titulo_caixinha": "Cachorro ferido na praça",
+  ...
+  "status": "atendimento",
+  "ong_id": 2
+}
+------------------------------------------------------------------
+
+---------- Remover (DELETE /denuncias/{id}/) ----------
+Remove a denúncia. Retorna 204 No Content em caso de sucesso.
+----------------------------------------------------------
+
+---------- Observações sobre os campos ----------
+- condicao: campo de múltipla escolha (MultiSelectField). Enviar como lista de strings,
+  usando exatamente os valores das opções abaixo:
+  "Bem / saudável", "Sujo", "Muito magro", "Fraco / sem forças", "Dificuldade para andar",
+  "Dificuldade para respirar", "Parece doente", "Machucado", "Sangrando",
+  "Osso ou ferida aberta", "Inchaço ou caroços", "Parasitas", "Sarna aparente",
+  "Queda de pelo", "Assustado", "Agressivo", "Muito quieto / parado", "Desorientado",
+  "Perto de trânsito intenso"
+
+- status: aceita apenas "aberto", "atendimento" ou "finalizado"
+
+- ong_id: id da ONG responsável pelo chamado (pode ser null enquanto nenhuma ONG assumiu)
+
+- usuario_id: id do usuário que criou a denúncia (pode ficar null se o usuário for deletado,
+  pois o campo usa on_delete=SET_NULL)
+----------------------------------------------------

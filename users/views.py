@@ -1,6 +1,6 @@
 from users.models import User,Ong
 from users.serializers import UserSerializer,RegisterSerializer,CustomTokenSerializer,OngSerializer
-from users.permissions import permissions,IsOwnerorAdmin
+from users.permissions import permissions,IsOwnerorAdmin,IsOwnerOrAdminOng
 
 from rest_framework import viewsets,generics
 from rest_framework.permissions import AllowAny
@@ -47,4 +47,4 @@ class OngViewset(viewsets.ModelViewSet):
     serializer_class = OngSerializer
     queryset = Ong.objects.all()
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdminOng]
