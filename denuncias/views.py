@@ -3,6 +3,7 @@ from denuncias.serializers import DenunciasSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets,generics
 from rest_framework import permissions
+from .filters import DenunciasFilter
 
 class DenunciasViewset(viewsets.ModelViewSet):
     serializer_class = DenunciasSerializer
@@ -10,6 +11,6 @@ class DenunciasViewset(viewsets.ModelViewSet):
     
     filter_backends = [DjangoFilterBackend]
 
-    filterset_fields = ['cidade','usuario_id','status']
+    filterset_class = DenunciasFilter
 
     permission_classes = [permissions.IsAuthenticated]

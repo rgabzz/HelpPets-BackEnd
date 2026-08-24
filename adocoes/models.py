@@ -14,8 +14,25 @@ class Animal(models.Model):
     status_adocao = models.CharField(max_length=50, choices=STATUS)
     ong = models.ForeignKey(
         'users.Ong',
-        on_delete=models.SET_NULL, 
+        on_delete=models.CASCADE,
         verbose_name="ONG",
-        null=True
+        null=False
     )
     criado_em = models.DateTimeField(null=False, default=timezone.now)
+
+class Adocao(models.Model):
+    animal = models.ForeignKey(
+            'adocoes.Animal',
+            on_delete=models.CASCADE, 
+            verbose_name="ÀNIMAL",
+            null=True 
+       )
+
+    ong = models.ForeignKey(
+               'users.Ong',
+               on_delete=models.SET_NULL, 
+               verbose_name="ONG",
+               null=True
+           )
+       
+    data_adocao = models.DateTimeField(null=False, default=timezone.now)
