@@ -156,9 +156,18 @@ a API devolve os dados atualizados:
                             ONG
 ============================================================
 
-Rota exige autenticação (IsAuthenticated). CRUD completo (GET, POST, PUT,
-PATCH, DELETE) — diferente de /users/, aqui não há checagem de dono, ou
-seja, qualquer usuário autenticado pode ver e editar qualquer perfil de ONG.
+Rota exige autenticação (IsAuthenticated) + permissão customizada
+IsOwnerOrAdminOng. CRUD completo (GET, POST, PUT, PATCH, DELETE), mas agora
+COM checagem de dono nas rotas de escrita:
+
+- GET /ongs/ e GET /ongs/{id/}    -> qualquer usuário autenticado pode ver
+- POST /ongs/                     -> qualquer usuário autenticado pode criar
+- PUT / PATCH / DELETE /ongs/{id}/ -> só o dono do perfil de ONG
+                                       (usuario == request.user) ou admin
+
+Obs: assim como em /denuncias/, essa checagem de dono é por objeto — só
+vale pra rotas de detalhe ({id}/). A listagem (GET /ongs/) continua aberta
+pra qualquer autenticado, sem filtrar por dono.
 
 Headers obrigatórios:
 - Authorization: Bearer TOKEN_DE_ACESSO

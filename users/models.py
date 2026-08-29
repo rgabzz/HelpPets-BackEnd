@@ -21,7 +21,7 @@ class User(AbstractUser):
     TIPO_USUARIO = (
         ('usuario', 'Usuário'),
         ('ong', 'ONG'),
-        ('policia', 'Policia'),
+        #('policia', 'Policia'),
         )
 
     email  = models.EmailField(unique=True)

@@ -1,0 +1,207 @@
+------- Rotas -------
+    GET    /animais/
+    POST   /animais/
+    GET    /animais/{id}/
+    PUT    /animais/{id}/
+    PATCH  /animais/{id}/
+    DELETE /animais/{id}/
+
+    GET    /adocoes/
+    POST   /adocoes/
+    GET    /adocoes/{id}/
+    PUT    /adocoes/{id}/
+    PATCH  /adocoes/{id}/
+    DELETE /adocoes/{id}/
+---------------------
+
+============================================================
+                          ANIMAL
+============================================================
+
+---------- Autenticação e Permissões ----------
+Todas as rotas de /animais/ exigem usuário autenticado (permissions.IsAuthenticated),
+e agora também passam pela permissão customizada AnimalPermissions.
+
+Headers obrigatórios:
+- Authorization: Bearer TOKEN_DE_ACESSO
+- Content-Type: application/json
+
+Regras da AnimalPermissions:
+- POST /animais/ (criar)          -> só ONG (TIPO_USUARIO == 'ONG') ou admin
+- GET /animais/ e /animais/{id}/  -> qualquer usuário autenticado
+- PUT / PATCH /animais/{id}/      -> dono da ONG do animal (obj.ong.usuario == request.user)
+                                      OU qualquer usuário que seja de uma ONG
+                                      (mesmo que não seja a ONG dona daquele
+                                      animal específico) — checa por objeto,
+                                      só na rota de detalhe/edição, não na listagem
+- DELETE /animais/{id}/           -> só admin (is_superuser)
+
+Obs: como a regra de PUT/PATCH libera "dono OU qualquer ONG", na prática
+qualquer ONG cadastrada consegue editar animais de outras ONGs, não só os
+seus próprios. Se a intenção for restringir a edição só à ONG dona do
+animal, a condição precisa ser só o "dono" (obj.ong.usuario == request.user).
+-----------------------------------
+
+---------- Listar (GET /animais/) ----------
+Retorna uma lista com todos os animais cadastrados para adoção.
+
+Suporta filtros via query params (DjangoFilterBackend):
+- ?especie=Cachorro
+- ?raca=Vira-lata
+- ?ong=1
+- ?status_adocao=disponivel
+- ?cidade=Apodi   (filtra pela cidade do usuário dono da ONG)
+
+Exemplo: GET /animais/?especie=Cachorro&status_adocao=disponivel
+
+a API vai devolver uma lista de objetos, no formato:
+[
+  {
+    "id": 1,
+    "nome": "Rex",
+    "especie": "Cachorro",
+    "raca": "Vira-lata",
+    "idade": "2 anos",
+    "descricao": "Animal dócil, gosta de crianças",
+    "status_adocao": "disponivel",
+    "ong": 1,
+    "criado_em": "2026-08-05T14:35:00Z"
+  }
+]
+------------------------------------------------
+
+---------- Criar (POST /animais/) ----------
+Front end envia:
+{
+  "nome": "Rex",
+  "especie": "Cachorro",
+  "raca": "Vira-lata",
+  "idade": "2 anos",
+  "descricao": "Animal dócil, gosta de crianças",
+  "status_adocao": "disponivel",
+  "ong": 1
+}
+
+Campos opcionais / preenchidos automaticamente pela API se não enviados:
+- nome, especie, raca, idade -> default: "Desconhecido"
+- criado_em                  -> default: data/hora atual
+
+a API vai devolver o objeto criado, no mesmo formato do GET (com "id" novo).
+------------------------------------------------
+
+---------- Detalhar (GET /animais/{id}/) ----------
+Retorna os dados de um animal específico, no mesmo formato do item da listagem.
+--------------------------------------------------------
+
+---------- Atualizar completo (PUT /animais/{id}/) ----------
+Front end precisa enviar TODOS os campos obrigatórios do model (igual ao POST).
+a API vai devolver o objeto atualizado.
+------------------------------------------------------------------
+
+---------- Atualizar parcial (PATCH /animais/{id}/) ----------
+Front end envia só o que mudou, por exemplo:
+{
+  "status_adocao": "em_processo"
+}
+
+a API vai devolver o objeto com os dados atualizados.
+------------------------------------------------------------------
+
+---------- Remover (DELETE /animais/{id}/) ----------
+Remove o animal. Retorna 204 No Content em caso de sucesso.
+----------------------------------------------------------
+
+---------- Observações sobre os campos ----------
+- status_adocao: aceita apenas "disponivel", "em_processo" ou "adotado"
+- ong: id da ONG responsável pelo animal (obrigatório, on_delete=CASCADE — se a
+  ONG for apagada, os animais dela também são)
+----------------------------------------------------
+
+============================================================
+                          ADOÇÃO
+============================================================
+
+---------- Autenticação e Permissões ----------
+Todas as rotas de /adocoes/ exigem usuário autenticado (permissions.IsAuthenticated),
+e agora também passam pela permissão customizada AdocoesPermissions.
+
+Headers obrigatórios:
+- Authorization: Bearer TOKEN_DE_ACESSO
+- Content-Type: application/json
+
+Regras da AdocoesPermissions:
+- POST /adocoes/ (criar)              -> só ONG (TIPO_USUARIO == 'ONG') ou admin
+- GET /adocoes/{id}/ (detalhar)       -> só admin
+- PUT / PATCH /adocoes/{id}/          -> só admin
+- DELETE /adocoes/{id}/               -> só admin
+
+Obs: assim como em /animais/, essas checagens de GET/PUT/PATCH/DELETE são
+por objeto — só valem pra rotas de detalhe ({id}/). A listagem
+(GET /adocoes/ sem id) NÃO passa por has_object_permission, então continua
+retornando todas as adoções pra qualquer usuário autenticado, mesmo não
+sendo admin. Se a intenção é a listagem também ser só pra admin, precisa
+filtrar isso na própria view (ex: sobrescrevendo get_queryset), a permissão
+sozinha não resolve.
+-----------------------------------
+
+---------- Listar (GET /adocoes/) ----------
+Retorna uma lista com todos os registros de adoção já realizados/solicitados.
+Não tem filtro configurado nessa rota (sem DjangoFilterBackend).
+
+a API vai devolver uma lista de objetos, no formato:
+[
+  {
+    "id": 1,
+    "animal": 1,
+    "ong": 1,
+    "usuario": 3,
+    "data_adocao": "2026-08-05T14:35:00Z"
+  }
+]
+------------------------------------------------
+
+---------- Criar (POST /adocoes/) ----------
+Front end envia:
+{
+  "animal": 1,
+  "ong": 1,
+  "usuario": 3
+}
+
+Campos opcionais / preenchidos automaticamente pela API se não enviados:
+- data_adocao -> default: data/hora atual
+
+a API vai devolver o objeto criado, no mesmo formato do GET (com "id" novo).
+------------------------------------------------
+
+---------- Detalhar (GET /adocoes/{id}/) ----------
+Retorna os dados de uma adoção específica, no mesmo formato do item da listagem.
+--------------------------------------------------------
+
+---------- Atualizar completo (PUT /adocoes/{id}/) ----------
+Front end precisa enviar TODOS os campos obrigatórios do model (igual ao POST).
+a API vai devolver o objeto atualizado.
+------------------------------------------------------------------
+
+---------- Atualizar parcial (PATCH /adocoes/{id}/) ----------
+Front end envia só o que mudou, por exemplo:
+{
+  "usuario": 5
+}
+
+a API vai devolver o objeto com os dados atualizados.
+------------------------------------------------------------------
+
+---------- Remover (DELETE /adocoes/{id}/) ----------
+Remove o registro de adoção. Retorna 204 No Content em caso de sucesso.
+----------------------------------------------------------
+
+---------- Observações sobre os campos ----------
+- animal: id do animal adotado (pode ficar null se o animal for apagado,
+  pois o campo usa on_delete=SET_NULL... na verdade o model usa CASCADE
+  pra Animal, então apagar o animal apaga a adoção também. Fique atento.)
+- ong: id da ONG responsável (pode ficar null se a ONG for deletada,
+  pois o campo usa on_delete=SET_NULL)
+- usuario: id do usuário que adotou (pode ficar null se o usuário for
+  deletado, pois o campo usa on_delete=SET_NULL)
+

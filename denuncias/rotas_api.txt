@@ -7,12 +7,24 @@
     DELETE /denuncias/{id}/
 ---------------------
 
----------- Autenticação ----------
-Todas as rotas de /denuncias/ exigem usuário autenticado (permissions.IsAuthenticated).
+---------- Autenticação e Permissões ----------
+Todas as rotas de /denuncias/ exigem usuário autenticado (permissions.IsAuthenticated),
+e agora também passam pela permissão customizada DenunciasPermission.
 
 Headers obrigatórios:
 - Authorization: Bearer TOKEN_DE_ACESSO
 - Content-Type: application/json
+
+Regras da DenunciasPermission (checadas por objeto, não pra lista):
+- GET /denuncias/{id}/ (detalhar)  -> só ONG, o dono (usuario da denúncia) ou admin
+- PUT / PATCH /denuncias/{id}/     -> só ONG, o dono (usuario da denúncia) ou admin
+- DELETE /denuncias/{id}/          -> só admin (is_superuser)
+- POST /denuncias/                 -> qualquer usuário autenticado pode criar
+
+Obs importante: GET /denuncias/ (listagem) NÃO é filtrado por essas regras —
+permissão de objeto só é checada em rotas de detalhe/edição/remoção (com {id}).
+Ou seja, a listagem continua retornando todas as denúncias pra qualquer
+usuário autenticado, mesmo que ele não seja dono/ONG/admin de cada uma.
 -----------------------------------
 
 ---------- Listar (GET /denuncias/) ----------

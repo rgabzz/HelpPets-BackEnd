@@ -75,7 +75,7 @@ class Denuncias(models.Model):
 
     status =  models.CharField(max_length=50, choices=STATUS_DENUNCIA)
     
-    ong_id = models.ForeignKey(
+    ong = models.ForeignKey(
         'users.Ong',
         on_delete=models.SET_NULL, 
         verbose_name="ONG ID",
@@ -84,7 +84,7 @@ class Denuncias(models.Model):
 
     criado_em = models.DateTimeField(null=False,default=timezone.now)
 
-    usuario_id = models.ForeignKey(
+    usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.SET_NULL, 
         null=True, 
