@@ -9,11 +9,24 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 class UserView(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
 
     permission_classes = [permissions.IsAuthenticated,IsOwnerorAdmin]
     http_method_names = ['get','patch','delete','head','options']
+
+    def get_queryset(self):
+
+        ''' 
+            Verificação criada para que nenhum usuário consiga acessar a lista com todos os usuários
+        - Sem essa verificação a rota /users/ fica exposta e todos conseguem acessar as informações dos usuários
+        - Com ela apenas admins conseguem ver isso, caso o usuário comum tente acessar, encontrará  apenas suas próprias informações
+
+        '''
+
+        if self.request.user.is_superuser:
+            return User.objects.all().order_by('id')
+        
+        return User.objects.filter(id=self.request.user.id)
 
     @action(detail=False,methods=["get","patch"])
     def me(self,request):

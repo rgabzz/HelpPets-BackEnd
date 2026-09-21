@@ -20,6 +20,13 @@ class IsOwnerorAdmin(permissions.BasePermission):
         return obj == request.user
 
 class IsOwnerOrAdminOng(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method == 'POST':  
+                    return request.user.is_superuser
+
+        return True
+
     def has_object_permission(self, request, view, obj):
         # se for método de leitura, libera pra qualquer autenticado
         if request.method in permissions.SAFE_METHODS:

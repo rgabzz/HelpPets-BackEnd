@@ -14,4 +14,8 @@ class DenunciasViewset(viewsets.ModelViewSet):
 
     filterset_class = DenunciasFilter
 
+    def perform_create(self, serializer):
+        # bloqueia o usuario de poder colocar a denuncia ja com uma ong pre pronta, alem de proibir alguem de colocar outro id de usuario apra aquela denuncia
+        serializer.save(usuario=self.request.user, ong=None, status='aberto')
+
     permission_classes = [permissions.IsAuthenticated, DenunciasPermission]

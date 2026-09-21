@@ -31,7 +31,7 @@ class AnimalPermissions(permissions.BasePermission):
 
         # 2. PUT e PATCH - Apenas ONGs ou Admins do sistema
         if request.method == 'PUT' or  request.method == 'PATCH': 
-            return perm_dono or perm_ong
+            return perm_dono or perm_admin
 
         # 3. DELETE - Apenas Superuser
         if request.method == 'DELETE': 
@@ -55,19 +55,17 @@ class AdocoesPermissions(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """
-            Controle de acesso ao objeto específico (Denúncia já existente)
+            Controle de acesso ao objeto específico (Adoção já existente)
         """
 
         perm_admin = (request.user.is_superuser)
+        perm_ong = (getattr(request.user, 'tipo', None) == 'ong')
+        perm_dono = (obj.usuario == request.user)
 
         # 1. GET - Apenas Admins
         if request.method in permissions.SAFE_METHODS:
-            return perm_admin
+            return perm_admin or perm_ong or perm_dono
 
-        # 2. PUT e PATCH - Apenas Admins
-        if request.method == 'PUT' or  request.method == 'PATCH': 
-            return perm_admin
-
-        # 3. DELETE - Apenas Admins
-        if request.method == 'DELETE': 
+        # 2. PUT, PATCH e DELETE - Apenas Admins
+        if request.method in ('PUT','PATCH','DELETE'): 
             return perm_admin
