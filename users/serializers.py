@@ -6,8 +6,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta():
         model = User
-        fields = ['first_name','last_name','genero','email','nascimento','cpf',
+        fields = ['first_name','last_name','username','genero','email','nascimento','cpf',
         'telefone', 'estado', 'cidade','tipo']
+        read_only_fields = ['tipo']
 
 class RegisterSerializer(serializers.ModelSerializer):
 
@@ -19,6 +20,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             "email",
             "username",
             "password",
+            "first_name",
+            "last_name",
             "genero",
             "nascimento",
             "telefone",
@@ -35,6 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(password)
         user.save()
+
+        return user
 
 class CustomTokenSerializer(TokenObtainPairSerializer):
     username_field = "email"

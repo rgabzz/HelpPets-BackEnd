@@ -20,7 +20,7 @@ class DenunciasPermission(permissions.BasePermission):
         """
 
         perm_dono = (obj.usuario == request.user)
-        perm_ong = (getattr(request.user, 'TIPO_USUARIO', None) == 'ONG')
+        perm_ong = (getattr(request.user, 'tipo', None) == 'ong')
         perm_admin = (request.user.is_superuser)
 
         # 1. GET - Apenas ONG e Usuário que criou e super user

@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -90,8 +90,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'help_pets',
-        'USER': 'django',
-        'PASSWORD': 'senha123',
+        'USER': f'{os.getenv('USER')}',
+        'PASSWORD': f'{os.getenv('PASSWORD')}',
         'HOST': 'localhost',
         'PORT': '3306',
     }

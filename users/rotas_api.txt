@@ -32,6 +32,8 @@ Front end envia:
   "email": "user@email.com",
   "username": "user",
   "password": "123456",
+  "first_name": "Nome",
+  "last_name": "Sobrenome",
   "genero": "masculino",
   "nascimento": "2007-05-10",
   "telefone": "84999999999",
@@ -39,6 +41,10 @@ Front end envia:
   "estado": "RN",
   "cidade": "Apodi"
 }
+
+Obs: "first_name" e "last_name" são opcionais (o model não exige), mas o
+front deve enviar já no cadastro se tiver esse dado, porque não tem outra
+rota pra completar isso depois além do PATCH /users/me/.
 
 Obs: o campo "tipo" NÃO é aceito no cadastro, o usuário sempre é criado
 como "usuario" por padrão (default do model). Pra virar "ong" ou "policia"
@@ -85,6 +91,7 @@ Cada item no formato:
     "first_name": "Hélio",
     "last_name": "Tarquinio",
     "genero": "Masculino",
+    "username": "nome_de_usuario"
     "email": "heliobolado123@gmail.com",
     "nascimento": "2007-01-01",
     "cpf": "11111111111",

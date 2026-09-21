@@ -7,7 +7,7 @@ class AnimalPermissions(permissions.BasePermission):
             Controle de acesso geral (Antes de pegar o objeto do banco)
         """
 
-        perm_ong = (getattr(request.user, 'TIPO_USUARIO', None) == 'ONG')
+        perm_ong = (getattr(request.user, 'tipo', None) == 'ong')
         perm_admin = (request.user.is_superuser)
         
         # Se for POST (Criação), apenas ONGs ou Admins do sistema
@@ -22,7 +22,7 @@ class AnimalPermissions(permissions.BasePermission):
         """
 
         perm_dono = (obj.ong.usuario == request.user)
-        perm_ong = (getattr(request.user, 'TIPO_USUARIO', None) == 'ONG')
+        perm_ong = (getattr(request.user, 'tipo', None) == 'ong')
         perm_admin = (request.user.is_superuser)
 
         # 1. GET - Todos os Usuários
@@ -44,7 +44,7 @@ class AdocoesPermissions(permissions.BasePermission):
             Controle de acesso geral (Antes de pegar o objeto do banco)
         """
 
-        perm_ong = (getattr(request.user, 'TIPO_USUARIO', None) == 'ONG')
+        perm_ong = (getattr(request.user, 'tipo', None) == 'ong')
         perm_admin = (request.user.is_superuser)
         
         # Se for POST (Criação), apenas ONGs ou Admins do sistema
