@@ -39,7 +39,7 @@ class AdocaoViewset(viewsets.ModelViewSet):
                 return Adocao.objects.all().order_by('id')
 
             if user.tipo == 'ong':
-                ong_perfil  = getattr(user, 'perfil_ONG', None) == 'ong'
+                ong_perfil  = getattr(user, 'perfil_ONG', None)
 
                 if ong_perfil  is None:
                     return Adocao.objects.none()
